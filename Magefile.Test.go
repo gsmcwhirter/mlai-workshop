@@ -6,6 +6,10 @@ import "github.com/magefile/mage/mg"
 
 type Test mg.Namespace
 
+func (t Test) All() {
+	mg.SerialDeps(t.Format, t.Lint, t.Run)
+}
+
 func (Test) Run() error {
 	return runNoEcho("go", "test", "-cover", "-coverprofile=./cover.profile", "./...")
 }
@@ -32,4 +36,8 @@ func (Test) Lint() error {
 	}
 
 	return nil
+}
+
+func (Test) Benchmark() error {
+	return runNoEcho("go", "test", "-bench=.", "-benchmem", "./...")
 }
